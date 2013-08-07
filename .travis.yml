@@ -11,6 +11,6 @@ before_script:
 # all of the reference implementations?
 script: 
   - git clone https://github.com/json-ld/json-ld.org.git spec
-  - nose tests/spec.py --with-coverage
+  - nosetests tests/spec.py --with-coverage --cover-package=pyld
 after_success:
-  - COVERALLS_REPO_TOKEN=abcdef1234569abdcef coveralls
+  - coveralls
