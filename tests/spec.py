@@ -84,26 +84,33 @@ def test():
     for bundle in load_tests():
         handler = get_handler(bundle["test"])
 
-        def spec(manifest, spec):
-            result = handler(
-                bundle["test"],
-                bundle["input"],
-                bundle["options"],
-                bundle["test_dir"]
-            )
+        class _spec():
+            def __init__(self):
+                self.description = "%s:: %s" % (
+                    bundle["manifest"]["name"],
+                    bundle["test"]["name"],
+                )
 
-            result_str = cannonical(result)
-            exp_str = cannonical(bundle["expect"])
+            def __call__(self):
+                result = handler(
+                    bundle["test"],
+                    bundle["input"],
+                    bundle["options"],
+                    bundle["test_dir"]
+                )
 
-            diff = list(unified_diff(
-                exp_str, result_str, bundle["test"]["expect"], "result"
-            ))
+                result_str = cannonical(result)
+                exp_str = cannonical(bundle["expect"])
 
-            log.debug("\n".join(diff))
+                diff = list(unified_diff(
+                    exp_str, result_str, bundle["test"]["expect"], "result"
+                ))
 
-            assert not diff
+                log.debug("\n\t" + ("\n\t".join(diff)))
 
-        yield (spec, bundle['manifest']['name'], bundle['test']['name'])
+                assert not diff
+
+        yield _spec()
 
 
 def cannonical(struct):

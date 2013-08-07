@@ -6,11 +6,8 @@ python:
 # no requirements, but simulate what a user would see
 install: pip install -e . --use-mirrors
 before_script:
-  - pip install -r requirements-test.txt --use-mirrors
-# download test suite and run tests... submodule? meta testing project with
-# all of the reference implementations?
-script: 
-  - git clone https://github.com/json-ld/json-ld.org.git spec
+  - pip install -q -r requirements-test.txt --use-mirrors
+script:
   - nosetests tests/spec.py --with-coverage --cover-package=pyld
 after_success:
   - coveralls
